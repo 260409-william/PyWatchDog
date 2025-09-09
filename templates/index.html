@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4"><i class="fas fa-shield-alt text-primary"></i> PyWatchdog</h1>
+            <p class="lead">Sistema de Monitoramento de Integridade de Arquivos</p>
+            <hr class="my-4">
+            <p>Proteja seus arquivos críticos contra modificações não autorizadas</p>
+            
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                            <h5>{{ files_count }} Arquivos</h5>
+                            <p>Monitorados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-bell fa-3x text-warning mb-3"></i>
+                            <h5>{{ alerts_count }} Alertas</h5>
+                            <p>Detectados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-clock fa-3x text-info mb-3"></i>
+                            <h5>Último Scan</h5>
+                            <p>{{ last_scan if last_scan else 'Nunca' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <button class="btn btn-success btn-lg" onclick="startScan()">
+                    <i class="fas fa-search"></i> Iniciar Scan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function startScan() {
+    fetch('/api/scan', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            directories: ['/etc', '/usr/bin'],
+            file_types: ['.conf', '.sh', '.py']
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Scan iniciado! ' + data.message);
+            location.reload();
+        } else {
+            alert('Erro: ' + data.message);
+        }
+    });
+}
+</script>
+{% endblock %}

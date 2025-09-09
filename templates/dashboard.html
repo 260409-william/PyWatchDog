@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+    <div>
+        <button class="btn btn-outline-primary me-2" onclick="verifyFiles()">
+            <i class="fas fa-sync-alt"></i> Verificar Agora
+        </button>
+        <button class="btn btn-outline-success" onclick="exportData()">
+            <i class="fas fa-download"></i> Exportar
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Cartões de Estatísticas -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6 class="card-title">Total de Arquivos</h6>
+                <h2>{{ stats.total_files }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h6 class="card-title">Arquivos Intactos</h6>
+                <h2>{{ stats.unchanged_files }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h6 class="card-title">Arquivos Modificados</h6>
+                <h2>{{ stats.modified_files }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h6 class="card-title">Alertas Críticos</h6>
+                <h2>{{ stats.critical_alerts }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Gráfico -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Status dos Arquivos</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="fileStatusChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimos Alertas -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Últimos Alertas</h5>
+                <span class="badge bg-danger">{{ stats.total_alerts }}</span>
+            </div>
+            <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                {% if recent_alerts %}
+                    {% for alert in recent_alerts %}
+                    <div class="alert alert-{{ 'danger' if alert.severity == 'critical' else 'warning' }} mb-2">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ alert.type|replace('_', ' ')|title }}</strong>
+                            <small>{{ alert.timestamp[:16]|replace('T', ' ') }}</small>
+                        </div>
+                        <p class="mb-0 small">{{ alert.message }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">Nenhum alerta recente</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Gráfico de status dos arquivos
+const ctx = document.getElementById('fileStatusChart').getContext('2d');
+const chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Intactos', 'Modificados', 'Deletados'],
+        datasets: [{
+            data: [
+                {{ stats.unchanged_files }},
+                {{ stats.modified_files }},
+                {{ stats.deleted_files }}
+            ],
+            backgroundColor: [
+                '#28a745',
+                '#ffc107',
+                '#dc3545'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+function verifyFiles() {
+    fetch('/api/verify', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Verificação concluída!');
+            location.reload();
+        } else {
+            alert('Erro: ' + data.message);
+        }
+    });
+}
+
+function exportData() {
+    window.location.href = '/api/export';
+}
+</script>
+{% endblock %}

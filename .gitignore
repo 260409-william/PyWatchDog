@@ -1,0 +1,91 @@
+# Dados de aplicação
+/data/
+/keys/
+/exports/
+/backups/
+/logs/
+
+# Arquivos de log
+*.log
+*.logs
+*.tmp
+
+# Arquivos temporários
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+
+# Ambiente virtual
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Configurações sensíveis
+config/config.yaml
+.env
+.env.*
+!.env.example
+
+# Build outputs
+/build/
+/dist/
+/*.egg-info/
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# Documentação
+/docs/_build/
+
+# Test outputs
+/.pytest_cache/
+/test-results/
+
+# Arquivos grandes
+*.large
+*.h5
+*.model
+
+# Certificados
+*.pem
+*.crt
+*.key
+*.csr
+
+# Arquivos de desenvolvimento
+.devcontainer/
+docker-compose.override.yml
+
+# Arquivos do sistema
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+[Tt]humbs.db

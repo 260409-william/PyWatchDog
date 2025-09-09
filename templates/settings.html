@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-cog me-2"></i>Configurações</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Configurações de Monitoramento</h5>
+            </div>
+            <div class="card-body">
+                <form id="monitoringSettings">
+                    <div class="mb-3">
+                        <label class="form-label">Intervalo de Verificação (segundos)</label>
+                        <input type="number" class="form-control" name="check_interval" value="{{ settings.check_interval|default(300) }}" min="60">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Algoritmo de Hash</label>
+                        <select class="form-select" name="hash_algorithm">
+                            <option value="md5" {{ 'selected' if settings.hash_algorithm == 'md5' }}>MD5</option>
+                            <option value="sha1" {{ 'selected' if settings.hash_algorithm == 'sha1' }}>SHA-1</option>
+                            <option value="sha256" {{ 'selected' if settings.hash_algorithm == 'sha256' or not settings.hash_algorithm }}>SHA-256</option>
+                            <option value="sha512" {{ 'selected' if settings.hash_algorithm == 'sha512' }}>SHA-512</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" name="enable_signatures" {{ 'checked' if settings.enable_signatures }}>
+                        <label class="form-check-label">Habilitar assinaturas digitais</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Configurações de Alertas</h5>
+            </div>
+            <div class="card-body">
+                <form id="alertSettings">
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" name="email_alerts" {{ 'checked' if settings.email_alerts }}>
+                        <label class="form-check-label">Alertas por Email</label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email para Alertas</label>
+                        <input type="email" class="form-control" name="alert_email" value="{{ settings.alert_email|default('') }}">
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" name="telegram_alerts" {{ 'checked' if settings.telegram_alerts }}>
+                        <label class="form-check-label">Alertas por Telegram</label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Chat ID do Telegram</label>
+                        <input type="text" class="form-control" name="telegram_chat_id" value="{{ settings.telegram_chat_id|default('') }}">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Gerenciamento de Chaves</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Status das Chaves:</label>
+                    <div class="alert alert-{{ 'success' if keys_exist else 'warning' }}">
+                        <i class="fas fa-{{ 'check-circle' if keys_exist else 'exclamation-triangle' }} me-2"></i>
+                        {{ 'Chaves RSA encontradas' if keys_exist else 'Chaves RSA não encontradas' }}
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" onclick="generateKeys()">
+                        <i class="fas fa-key me-2"></i>Gerar Novas Chaves
+                    </button>
+                    <button class="btn btn-info" onclick="backupKeys()">
+                        <i class="fas fa-download me-2"></i>Backup das Chaves
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('monitoringSettings').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveSettings('monitoring', new FormData(this));
+});
+
+document.getElementById('alertSettings').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveSettings('alerts', new FormData(this));
+});
+
+function saveSettings(type, formData) {
+    const data = Object.fromEntries(formData.entries());
+    
+    fetch('/api/settings/' + type, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Configurações salvas com sucesso!');
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    });
+}
+
+function generateKeys() {
+    if (confirm('Isso irá gerar novas chaves RSA. Tem certeza?')) {
+        fetch('/api/generate-keys', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Chaves geradas com sucesso!');
+                location.reload();
+            } else {
+                alert('Erro: ' + result.message);
+            }
+        });
+    }
+}
+
+function backupKeys() {
+    // Implementar download das chaves
+    alert('Funcionalidade de backup em desenvolvimento...');
+}
+</script>
+{% endblock %}
