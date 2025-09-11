@@ -13,15 +13,3 @@ Sistema de monitoramento de integridade de arquivos escrito em Python com interf
 - ✅ Relatórios e exportação de dados
 - ✅ API RESTful completa
 
-## 🚀 Instalação Rápida
-
-```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/pywatchdog.git
-cd pywatchdog
-
-# Instale as dependências
-pip install -r requirements.txt
-
-# Execute o sistema
-python run.py
