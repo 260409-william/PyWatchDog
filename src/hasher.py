@@ -15,8 +15,7 @@ class AdvancedHasher:
         self.private_key_path = private_key_path
         self.public_key_path = public_key_path
         self.setup_logging()
-        
-        # Gerar chaves se não existirem
+    
         if private_key_path and not os.path.exists(private_key_path):
             self.generate_keys(private_key_path, public_key_path)
     
@@ -171,7 +170,6 @@ class AdvancedHasher:
         
         return baseline
 
-# Função de utilidade para verificar hashes em lote
 def verify_files_against_baseline(files_baseline, hasher_instance):
     """Verifica vários arquivos contra uma baseline"""
     results = {
@@ -187,19 +185,19 @@ def verify_files_against_baseline(files_baseline, hasher_instance):
             results['deleted'].append(file_path)
             continue
         
-        # Verificar assinatura se existir
+ 
         if 'signature' in baseline_data:
             data_to_verify = {k: v for k, v in baseline_data.items() if k != 'signature'}
             if not hasher_instance.verify_signature(data_to_verify, baseline_data['signature']):
                 results['errors'].append(f"Assinatura inválida para {file_path}")
         
-        # Calcular hash atual
+        
         current_hash = hasher_instance.calculate_hash(file_path)
         if current_hash is None:
             results['errors'].append(f"Erro ao calcular hash para {file_path}")
             continue
         
-        # Comparar com hash da baseline
+     
         baseline_hash = baseline_data['hashes'].get(hasher_instance.algorithm)
         if baseline_hash and current_hash == baseline_hash:
             results['unchanged'].append(file_path)
