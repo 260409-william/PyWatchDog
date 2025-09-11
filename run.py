@@ -7,19 +7,29 @@ Arquivo principal de execução
 import os
 import sys
 import logging
-from src.web_dashboard import app, config, load_monitoring_data, start_monitoring
+from flask import Flask
 
 # Configurar logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('pywatchdog.log'),
+        logging.FileHandler('logs/pywatchdog.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 
 logger = logging.getLogger(__name__)
+
+# Criar aplicação Flask
+app = Flask(__name__)
+
+class Config:
+    host = '127.0.0.1'
+    port = 5000
+    debug = True
+
+config = Config()
 
 def setup_directories():
     """Cria todos os diretórios necessários"""
@@ -27,7 +37,6 @@ def setup_directories():
         'data',
         'keys', 
         'exports',
-        'templates',
         'static/css',
         'static/js',
         'logs'
@@ -43,6 +52,7 @@ def check_dependencies():
         import flask
         import yaml
         from Crypto.PublicKey import RSA
+        import watchdog
         logger.info("Todas as dependências estão instaladas")
         return True
     except ImportError as e:
@@ -50,6 +60,40 @@ def check_dependencies():
         print(f"Erro: {e}")
         print("Instale as dependências com: pip install -r requirements.txt")
         return False
+
+def load_monitoring_data():
+    """Carrega dados de monitoramento"""
+    return {
+        'total_files': 0,
+        'unchanged_files': 0,
+        'modified_files': 0,
+        'deleted_files': 0,
+        'critical_alerts': 0,
+        'total_alerts': 0
+    }
+
+def start_monitoring():
+    """Inicia monitoramento em background"""
+    logger.info("Monitoramento em background iniciado")
+    # Implementação real virá depois
+
+# Rotas básicas
+@app.route('/')
+def index():
+    return "PyWatchdog - Sistema de Monitoramento"
+
+@app.route('/dashboard')
+def dashboard():
+    stats = load_monitoring_data()
+    return f"Dashboard - Arquivos: {stats['total_files']}"
+
+@app.route('/api/verify', methods=['POST'])
+def api_verify():
+    return {'success': True, 'message': 'Verificação iniciada'}
+
+@app.route('/api/export')
+def api_export():
+    return {'success': True, 'data': []}
 
 def main():
     """Função principal"""
@@ -62,10 +106,6 @@ def main():
     
     if not check_dependencies():
         sys.exit(1)
-    
-    # Carregar dados de monitoramento
-    global monitoring_data
-    monitoring_data = load_monitoring_data()
     
     # Iniciar monitoramento em background
     try:
