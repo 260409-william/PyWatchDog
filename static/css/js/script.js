@@ -1,4 +1,4 @@
-// PyWatchdog - Scripts JavaScript
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar tooltips do Bootstrap
@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
-    // Auto-hide alerts após 5 segundos
     const alerts = document.querySelectorAll('.alert.alert-dismissible');
     alerts.forEach(alert => {
         setTimeout(() => {
@@ -16,14 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 
-    // Inicializar filtros de tabela
+
     initTableFilters();
     
-    // Inicializar gráficos se existirem
+
     initCharts();
 });
 
-// Funções utilitárias
+
 function formatBytes(bytes, decimals = 2) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -52,7 +51,6 @@ function showToast(message, type = 'info') {
         document.body.appendChild(toastContainer);
     }
 
-    // Criar toast
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white bg-${type} border-0`;
     toast.innerHTML = `
@@ -66,13 +64,13 @@ function showToast(message, type = 'info') {
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
     
-    // Remover toast após ser escondido
+
     toast.addEventListener('hidden.bs.toast', function() {
         toast.remove();
     });
 }
 
-// Filtros de tabela
+
 function initTableFilters() {
     const searchInputs = document.querySelectorAll('input[type="text"][id*="search"]');
     searchInputs.forEach(input => {
@@ -117,7 +115,7 @@ function initCharts() {
     });
 }
 
-// API Calls
+
 async function apiCall(url, options = {}) {
     try {
         const response = await fetch(url, {
@@ -140,7 +138,7 @@ async function apiCall(url, options = {}) {
     }
 }
 
-// File operations
+
 function downloadFile(content, fileName, contentType) {
     const blob = new Blob([content], { type: contentType });
     const url = window.URL.createObjectURL(blob);
@@ -153,7 +151,7 @@ function downloadFile(content, fileName, contentType) {
     window.URL.revokeObjectURL(url);
 }
 
-// Theme handling
+
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
@@ -178,10 +176,10 @@ function updateThemeToggle(theme) {
     }
 }
 
-// Inicializar tema ao carregar a página
+
 initTheme();
 
-// Event listeners para elementos comuns
+
 document.addEventListener('click', function(e) {
     // Copiar para clipboard
     if (e.target.closest('[data-copy]')) {
@@ -189,7 +187,7 @@ document.addEventListener('click', function(e) {
         copyToClipboard(text);
     }
     
-    // Download de arquivos
+
     if (e.target.closest('[data-download]')) {
         const data = e.target.closest('[data-download]').getAttribute('data-download');
         const fileName = e.target.closest('[data-download]').getAttribute('data-filename') || 'download.txt';
@@ -198,7 +196,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Funções específicas do PyWatchdog
+
 function startRealTimeMonitoring() {
     const eventSource = new EventSource('/api/events');
     
@@ -206,7 +204,6 @@ function startRealTimeMonitoring() {
         const data = JSON.parse(event.data);
         showToast(`Alerta: ${data.message}`, data.type === 'alert' ? 'warning' : 'info');
         
-        // Atualizar contadores se estiver na dashboard
         if (window.location.pathname === '/dashboard') {
             updateDashboardCounters();
         }
@@ -220,11 +217,9 @@ function startRealTimeMonitoring() {
 }
 
 function updateDashboardCounters() {
-    // Fazer chamada API para atualizar os contadores
     fetch('/api/stats')
         .then(response => response.json())
         .then(data => {
-            // Atualizar elementos na página
             document.querySelectorAll('[data-counter]').forEach(element => {
                 const counterType = element.getAttribute('data-counter');
                 if (data[counterType] !== undefined) {
@@ -237,7 +232,6 @@ function updateDashboardCounters() {
         });
 }
 
-// Iniciar monitoramento em tempo real se estiver na dashboard
 if (window.location.pathname === '/dashboard') {
     startRealTimeMonitoring();
 }
