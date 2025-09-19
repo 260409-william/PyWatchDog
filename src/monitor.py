@@ -73,7 +73,6 @@ class FileIntegrityMonitor:
                 current_mtime = os.path.getmtime(file_path)
                 current_size = os.path.getsize(file_path)
                 
-                # Verifica alterações
                 if current_hash != baseline_info['hash']:
                     self.alert(f"ARQUIVO MODIFICADO: {file_path}")
                 
