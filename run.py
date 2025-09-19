@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 PyWatchdog - Sistema de Monitoramento de Integridade de Arquivos
 Arquivo principal de execução
@@ -9,7 +9,7 @@ import sys
 import logging
 from flask import Flask
 
-# Configurar logging
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -21,7 +21,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Criar aplicação Flask
+
 app = Flask(__name__)
 
 class Config:
@@ -75,9 +75,9 @@ def load_monitoring_data():
 def start_monitoring():
     """Inicia monitoramento em background"""
     logger.info("Monitoramento em background iniciado")
-    # Implementação real virá depois
 
-# Rotas básicas
+
+
 @app.route('/')
 def index():
     return "PyWatchdog - Sistema de Monitoramento"
@@ -101,13 +101,13 @@ def main():
     print("🐕 PyWatchdog - Monitor de Integridade")
     print("=" * 50)
     
-    # Setup inicial
+ 
     setup_directories()
     
     if not check_dependencies():
         sys.exit(1)
     
-    # Iniciar monitoramento em background
+  
     try:
         start_monitoring()
         logger.info("Monitoramento em background iniciado")
@@ -115,7 +115,7 @@ def main():
         logger.error(f"Erro ao iniciar monitoramento: {e}")
         print(f"Aviso: Monitoramento em background não iniciado: {e}")
     
-    # Executar aplicação web
+
     print(f"🚀 Servidor web iniciado em http://{config.host}:{config.port}")
     print("📊 Acesse o dashboard no seu navegador")
     print("⏹️  Pressione Ctrl+C para parar o servidor")
