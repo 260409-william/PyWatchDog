@@ -4,7 +4,7 @@ Package inicialização
 """
 
 __version__ = "1.0.0"
-__author__ = "Seu Nome"
+__author__ = "Will"
 __description__ = "Sistema de monitoramento de integridade de arquivos com Python"
 
 
