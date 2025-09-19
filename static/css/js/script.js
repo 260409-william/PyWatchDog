@@ -1,7 +1,6 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar tooltips do Bootstrap
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -41,7 +40,6 @@ function copyToClipboard(text) {
 }
 
 function showToast(message, type = 'info') {
-    // Criar container de toasts se não existir
     let toastContainer = document.getElementById('toastContainer');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
