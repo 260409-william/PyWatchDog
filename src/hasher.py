@@ -32,11 +32,11 @@ class AdvancedHasher:
             random_generator = Random.new().read
             key = RSA.generate(2048, random_generator)
             
-            # Salvar chave privada
+            # Chave primaria 
             with open(private_key_path, 'wb') as priv_file:
                 priv_file.write(key.export_key('PEM'))
             
-            # Salvar chave pública
+            # chave pública
             with open(public_key_path, 'wb') as pub_file:
                 pub_file.write(key.publickey().export_key('PEM'))
                 
@@ -92,7 +92,7 @@ class AdvancedHasher:
             with open(key_path, 'rb') as key_file:
                 private_key = RSA.import_key(key_file.read())
             
-            # Se data for dicionário, converter para JSON string
+          
             if isinstance(data, dict):
                 data_str = json.dumps(data, sort_keys=True)
             else:
@@ -116,7 +116,6 @@ class AdvancedHasher:
             with open(key_path, 'rb') as key_file:
                 public_key = RSA.import_key(key_file.read())
             
-            # Se data for dicionário, converter para JSON string
             if isinstance(data, dict):
                 data_str = json.dumps(data, sort_keys=True)
             else:
