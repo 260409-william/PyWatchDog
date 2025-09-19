@@ -49,12 +49,10 @@ class AlertSystem:
                 return False
     
     def send_console_alert(self, message):
-        """Envia alerta para o console"""
         print(f"🔔 ALERTA: {message}")
         return True
     
     def send_alert(self, subject, message, alert_type='console'):
-        """Envia alerta pelo método configurado"""
         if alert_type == 'telegram':
             return self.send_telegram_alert(message)
         elif alert_type == 'email':
