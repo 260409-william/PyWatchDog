@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# Configuração básica
+# básico 
 class Config:
     host = '0.0.0.0'
     port = 5000
@@ -19,8 +19,7 @@ def load_config():
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
     return {}
-
-# Dados de exemplo
+# exemplo
 def load_monitoring_data():
     return {
         'total_files': 0,
@@ -32,10 +31,9 @@ def load_monitoring_data():
     }
 
 def start_monitoring():
-    # Implementar monitoramento
     pass
 
-# Rotas
+
 @app.route('/')
 def index():
     return render_template('index.html', 
